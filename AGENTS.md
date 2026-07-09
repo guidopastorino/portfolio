@@ -1,0 +1,3 @@
+This is my personal portfolio project.
+It is a nextjs app router project using pnpm as a package manager.
+It uses shadcn for components, located in @/components/ui/...
