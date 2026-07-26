@@ -17,7 +17,7 @@ import {
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 const CHAT_DEFAULT_WIDTH = 380;
-const CHAT_MIN_WIDTH = 280;
+const CHAT_MIN_WIDTH = CHAT_DEFAULT_WIDTH;
 const CHAT_MAX_WIDTH = 560;
 const HEADER_HEIGHT = "3.5rem";
 
@@ -51,7 +51,7 @@ function DesktopChatSidebar() {
 
   return (
     <aside
-      className="sticky top-14 z-30 flex shrink-0 flex-col border-l bg-background relative"
+      className="sticky top-14 z-30 flex shrink-0 flex-col self-start border-l bg-background relative"
       style={{
         width,
         height: `calc(100dvh - ${HEADER_HEIGHT})`,

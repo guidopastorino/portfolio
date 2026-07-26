@@ -1,0 +1,7 @@
+- info (about, experiencia, …) ósea lo básico que tengo en el cv
+- mostrar datos de GitHub
+- certificaciones
+- chat IA con KB sobre mí
+- Herramientas de IA que uso y lenguajes que manejo
+- proyectos
+- form de contacto
