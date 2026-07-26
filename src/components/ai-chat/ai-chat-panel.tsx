@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import {
   type FormEvent,
+  type KeyboardEvent,
   type ReactNode,
   useEffect,
   useRef,
@@ -19,16 +20,25 @@ import {
 import { useAiChat } from "@/components/ai-chat/ai-chat-context";
 import { MarkdownMessage } from "@/components/ai-chat/markdown-message";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 const WELCOME_MESSAGE =
   "Hi! I'm Guido's AI assistant. Ask me anything about his experience, projects, or skills.";
 
+const COMPOSER_MIN_HEIGHT = 72;
+const COMPOSER_MAX_HEIGHT = 220;
+const COMPOSER_DEFAULT_HEIGHT = 72;
+
 export function AiChatPanel() {
   const { setOpen, messages, sendMessage, status, error } = useAiChat();
   const [input, setInput] = useState("");
+  const [composerHeight, setComposerHeight] = useState(COMPOSER_DEFAULT_HEIGHT);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const resizeDragRef = useRef<{
+    startY: number;
+    startHeight: number;
+  } | null>(null);
 
   const isLoading = status === "submitted" || status === "streaming";
   const messageCount = messages.length;
@@ -49,13 +59,51 @@ export function AiChatPanel() {
     });
   }, [messageCount, lastMessageTextLength, status]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  useEffect(() => {
+    const onPointerMove = (event: PointerEvent) => {
+      if (!resizeDragRef.current) return;
+
+      const delta = resizeDragRef.current.startY - event.clientY;
+      const nextHeight = Math.min(
+        COMPOSER_MAX_HEIGHT,
+        Math.max(
+          COMPOSER_MIN_HEIGHT,
+          resizeDragRef.current.startHeight + delta,
+        ),
+      );
+      setComposerHeight(nextHeight);
+    };
+
+    const onPointerUp = () => {
+      if (!resizeDragRef.current) return;
+      resizeDragRef.current = null;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
+  }, []);
+
+  function handleSubmit(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
     const text = input.trim();
     if (!text || isLoading) return;
 
     sendMessage({ text });
     setInput("");
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmit();
+    }
   }
 
   return (
@@ -134,28 +182,55 @@ export function AiChatPanel() {
 
       <form
         onSubmit={handleSubmit}
-        className="flex shrink-0 items-center gap-2 border-t bg-background p-3"
+        className="shrink-0 border-t bg-background p-3"
       >
-        <Input
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask about Guido..."
-          aria-label="Message"
-          className="flex-1"
-          disabled={isLoading}
-        />
-        <Button
-          type="submit"
-          size="icon-sm"
-          aria-label="Send message"
-          disabled={isLoading || !input.trim()}
+        <div
+          className="relative flex flex-col border bg-background"
+          style={{ height: composerHeight }}
         >
-          {isLoading ? (
-            <LoaderCircleIcon className="animate-spin" />
-          ) : (
-            <SendIcon />
-          )}
-        </Button>
+          <button
+            type="button"
+            aria-label="Resize message input"
+            className="absolute inset-x-0 top-0 z-10 flex h-3 cursor-ns-resize items-center justify-center border-0 bg-transparent p-0"
+            onPointerDown={(event) => {
+              event.preventDefault();
+              resizeDragRef.current = {
+                startY: event.clientY,
+                startHeight: composerHeight,
+              };
+              document.body.style.cursor = "ns-resize";
+              document.body.style.userSelect = "none";
+            }}
+          >
+            <span className="h-0.5 w-8 bg-border" />
+          </button>
+
+          <div className="flex h-full min-h-0 items-end gap-2 px-2 pt-3 pb-2">
+            <Textarea
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about Guido..."
+              aria-label="Message"
+              disabled={isLoading}
+              className="scrollbar-composer h-full min-h-0 min-w-0 flex-1 resize-none border-0 bg-transparent px-1 py-1 focus-visible:ring-0 dark:bg-transparent"
+            />
+
+            <Button
+              type="submit"
+              size="icon-sm"
+              aria-label="Send message"
+              disabled={isLoading || !input.trim()}
+              className="shrink-0"
+            >
+              {isLoading ? (
+                <LoaderCircleIcon className="animate-spin" />
+              ) : (
+                <SendIcon />
+              )}
+            </Button>
+          </div>
+        </div>
       </form>
     </div>
   );
