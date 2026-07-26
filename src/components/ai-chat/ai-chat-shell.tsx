@@ -116,7 +116,7 @@ function AiChatShellInner({
           <SheetContent
             side="right"
             showCloseButton={false}
-            className="h-dvh w-full gap-0 overflow-hidden p-0 sm:max-w-md"
+            className="h-dvh w-full max-w-none gap-0 overflow-hidden p-0 data-[side=right]:w-full data-[side=right]:max-w-none data-[side=right]:sm:max-w-none"
           >
             <SheetHeader className="sr-only">
               <SheetTitle>AI Chat</SheetTitle>
