@@ -12,6 +12,7 @@ import { AiChatShell } from "@/components/ai-chat/ai-chat-shell";
 import { SectionLabel } from "@/components/home/section-label";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { SiteHeader } from "@/components/site-header";
+import { TrackedAnchor } from "@/components/tracked-anchor";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -76,15 +77,17 @@ export function HomePage() {
                 <PhoneIcon className="size-3.5" />
                 {siteConfig.phone}
               </a>
-              <a
+              <TrackedAnchor
                 href={siteConfig.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                event="external_link_click"
+                eventParams={{ link_id: "github", location: "about" }}
                 className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
               >
                 <GlobeIcon className="size-3.5" />
                 github.com/guidopastorino
-              </a>
+              </TrackedAnchor>
             </CardFooter>
           </Card>
         </section>
@@ -118,14 +121,19 @@ export function HomePage() {
                         ) : (
                           <>
                             {item.before}
-                            <a
+                            <TrackedAnchor
                               href={item.link.href}
                               target="_blank"
                               rel="noopener noreferrer"
+                              event="external_link_click"
+                              eventParams={{
+                                link_id: item.link.label,
+                                location: "experience",
+                              }}
                               className="text-foreground underline-offset-2 transition-colors hover:underline"
                             >
                               {item.link.label}
-                            </a>
+                            </TrackedAnchor>
                             {item.after}
                           </>
                         )}
@@ -170,15 +178,17 @@ export function HomePage() {
         <section id="projects" className="scroll-mt-20 space-y-3">
           <div className="flex items-center justify-between gap-3 px-1">
             <SectionLabel>{"// Featured Projects"}</SectionLabel>
-            <a
+            <TrackedAnchor
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
+              event="external_link_click"
+              eventParams={{ link_id: "github", location: "projects" }}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               View all projects
               <ArrowRightIcon className="size-3" />
-            </a>
+            </TrackedAnchor>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -207,16 +217,21 @@ export function HomePage() {
                     </div>
                   </CardHeader>
                   <CardFooter className="mt-auto justify-end gap-2">
-                    <a
+                    <TrackedAnchor
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      event="external_link_click"
+                      eventParams={{
+                        link_id: project.title,
+                        location: "projects",
+                      }}
                       className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
                     >
                       <GitHubIcon className="size-3.5" />
                       View Repo
                       <ArrowRightIcon className="size-3" />
-                    </a>
+                    </TrackedAnchor>
                   </CardFooter>
                 </Card>
               );
@@ -242,10 +257,12 @@ export function HomePage() {
                   <PhoneIcon data-icon="inline-start" />
                   Call Me
                 </a>
-                <a
+                <TrackedAnchor
                   href={siteConfig.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
+                  event="external_link_click"
+                  eventParams={{ link_id: "linkedin", location: "contact" }}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
                     "min-w-36",
@@ -253,7 +270,7 @@ export function HomePage() {
                 >
                   <LinkedInIcon className="size-4" data-icon="inline-start" />
                   LinkedIn
-                </a>
+                </TrackedAnchor>
               </div>
             </CardHeader>
             <CardFooter className="justify-center py-4 text-[11px] text-muted-foreground">

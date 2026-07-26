@@ -11,6 +11,8 @@ import {
   useState,
 } from "react";
 
+import { trackEvent } from "@/lib/analytics";
+
 type AiChatContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -30,20 +32,39 @@ const chatTransport = new DefaultChatTransport({
 });
 
 export function AiChatProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
 
   const { messages, sendMessage, stop, status, error, setMessages } = useChat({
     id: "portfolio-ai-chat",
     transport: chatTransport,
   });
 
+  const setOpen = useCallback((nextOpen: boolean) => {
+    setOpenState((current) => {
+      if (nextOpen && !current) {
+        trackEvent("ai_chat_opened");
+      }
+      return nextOpen;
+    });
+  }, []);
+
   const toggle = useCallback(() => {
-    setOpen((current) => !current);
+    setOpenState((current) => {
+      if (!current) {
+        trackEvent("ai_chat_opened");
+      }
+      return !current;
+    });
   }, []);
 
   const resetChat = useCallback(() => {
     setMessages([]);
   }, [setMessages]);
+
+  const stopTracked = useCallback(() => {
+    trackEvent("ai_chat_stopped");
+    stop();
+  }, [stop]);
 
   const value = useMemo(
     () => ({
@@ -52,12 +73,22 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
       toggle,
       messages,
       sendMessage,
-      stop,
+      stop: stopTracked,
       status,
       error,
       resetChat,
     }),
-    [open, toggle, messages, sendMessage, stop, status, error, resetChat],
+    [
+      open,
+      setOpen,
+      toggle,
+      messages,
+      sendMessage,
+      stopTracked,
+      status,
+      error,
+      resetChat,
+    ],
   );
 
   return (

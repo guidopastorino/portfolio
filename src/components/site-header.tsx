@@ -3,6 +3,7 @@ import { DownloadIcon, MenuIcon } from "lucide-react";
 import { AiChatToggle } from "@/components/ai-chat/ai-chat-toggle";
 import { GitHubIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TrackedAnchor } from "@/components/tracked-anchor";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -37,9 +38,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <a
+          <TrackedAnchor
             href={siteConfig.resumeUrl}
             download
+            event="resume_download"
+            eventParams={{ location: "header" }}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "hidden sm:inline-flex",
@@ -47,17 +50,19 @@ export function SiteHeader() {
           >
             <DownloadIcon data-icon="inline-start" />
             Resume
-          </a>
+          </TrackedAnchor>
 
           <Button
             variant="outline"
             size="icon-sm"
             nativeButton={false}
             render={
-              <a
+              <TrackedAnchor
                 href={siteConfig.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                event="external_link_click"
+                eventParams={{ link_id: "github", location: "header" }}
               />
             }
             aria-label="GitHub"
@@ -95,13 +100,15 @@ function MobileNav() {
           </DropdownMenuItem>
         ))}
         <DropdownMenuItem className="p-0">
-          <a
+          <TrackedAnchor
             href={siteConfig.resumeUrl}
             download
+            event="resume_download"
+            eventParams={{ location: "mobile_nav" }}
             className="flex w-full items-center px-2 py-2"
           >
             Resume
-          </a>
+          </TrackedAnchor>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

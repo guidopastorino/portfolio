@@ -51,6 +51,7 @@ import {
   useMessageScroller,
 } from "@/components/ui/message-scroller";
 import { Textarea } from "@/components/ui/textarea";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const COMPOSER_MAX_HEIGHT = 220;
@@ -166,9 +167,18 @@ export function AiChatPanel() {
     }))
     .filter((item) => item.text.length > 0);
 
-  function startConversation(text: string) {
-    if (!text.trim() || isLoading) return;
-    sendMessage({ text: text.trim() });
+  function startConversation(
+    text: string,
+    source: "composer" | "suggestion" = "composer",
+  ) {
+    const prompt = text.trim();
+    if (!prompt || isLoading) return;
+
+    trackEvent("ai_chat_message_sent", {
+      source,
+      prompt_length: prompt.length,
+    });
+    sendMessage({ text: prompt });
   }
 
   useEffect(() => {
@@ -197,6 +207,10 @@ export function AiChatPanel() {
 
   function handleExportTranscript() {
     if (messages.length === 0) return;
+
+    trackEvent("ai_chat_exported", {
+      message_count: messages.length,
+    });
 
     const title = getTranscriptTitle(messages);
     downloadTranscriptMarkdown(buildTranscriptMarkdown(messages, title), title);
@@ -254,7 +268,9 @@ export function AiChatPanel() {
 
         {isEmpty ? (
           <ChatEmptyState
-            onSelectSuggestion={startConversation}
+            onSelectSuggestion={(text) =>
+              startConversation(text, "suggestion")
+            }
             disabled={isLoading}
           />
         ) : (

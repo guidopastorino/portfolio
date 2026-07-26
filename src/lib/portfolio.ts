@@ -23,7 +23,7 @@ export const siteConfig = {
   phoneHref: "tel:+543402552647",
   github: "https://github.com/guidopastorino",
   linkedin: "https://www.linkedin.com/in/guidopastorino",
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/Guido%20Pastorino%20CV.pdf",
   url: getSiteUrl(),
   ogImage: "/og-image.png",
   bio: "Full Stack Developer specialized in the Next.js, TypeScript, PostgreSQL, Tailwind CSS, and shadcn/ui ecosystem. I build fast, maintainable products, optimize performance, and ensure reliable releases through testing and CI/CD.",
