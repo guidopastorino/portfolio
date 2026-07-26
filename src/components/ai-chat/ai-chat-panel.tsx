@@ -1,6 +1,13 @@
 "use client";
 
-import { BotIcon, LoaderCircleIcon, SendIcon, XIcon } from "lucide-react";
+import {
+  BotIcon,
+  CheckIcon,
+  CopyIcon,
+  LoaderCircleIcon,
+  SendIcon,
+  XIcon,
+} from "lucide-react";
 import {
   type FormEvent,
   type ReactNode,
@@ -10,6 +17,7 @@ import {
 } from "react";
 
 import { useAiChat } from "@/components/ai-chat/ai-chat-context";
+import { MarkdownMessage } from "@/components/ai-chat/markdown-message";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -71,7 +79,9 @@ export function AiChatPanel() {
         ref={messagesContainerRef}
         className="scrollbar-none min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4"
       >
-        <ChatBubble from="assistant">{WELCOME_MESSAGE}</ChatBubble>
+        <ChatBubble from="assistant" copyText={WELCOME_MESSAGE}>
+          <MarkdownMessage content={WELCOME_MESSAGE} />
+        </ChatBubble>
 
         {messages.map((message, index) => {
           const text = message.parts
@@ -87,11 +97,21 @@ export function AiChatPanel() {
             index === messages.length - 1;
 
           return (
-            <ChatBubble key={message.id} from={message.role}>
-              {text}
-              {isStreamingAssistant ? (
-                <span className="ml-0.5 inline-block h-3 w-1 animate-pulse bg-foreground align-middle" />
-              ) : null}
+            <ChatBubble
+              key={message.id}
+              from={message.role}
+              copyText={isStreamingAssistant ? undefined : text}
+            >
+              {message.role === "assistant" ? (
+                <>
+                  <MarkdownMessage content={text} />
+                  {isStreamingAssistant ? (
+                    <span className="ml-0.5 inline-block h-3 w-1 animate-pulse bg-foreground align-middle" />
+                  ) : null}
+                </>
+              ) : (
+                text
+              )}
             </ChatBubble>
           );
         })}
@@ -144,9 +164,11 @@ export function AiChatPanel() {
 function ChatBubble({
   from,
   children,
+  copyText,
 }: {
   from: "user" | "assistant" | "system";
   children: ReactNode;
+  copyText?: string;
 }) {
   const isUser = from === "user";
 
@@ -159,14 +181,49 @@ function ChatBubble({
       ) : null}
       <div
         className={cn(
-          "max-w-[85%] px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap",
-          isUser
-            ? "border border-foreground bg-foreground text-background"
-            : "border bg-muted/50 text-foreground",
+          "flex max-w-[85%] flex-col gap-1",
+          isUser ? "items-end" : "items-start",
         )}
       >
-        {children}
+        <div
+          className={cn(
+            "px-3 py-2 text-xs leading-relaxed",
+            isUser
+              ? "whitespace-pre-wrap border border-foreground bg-foreground text-background"
+              : "border bg-muted/50 text-foreground",
+          )}
+        >
+          {children}
+        </div>
+        {copyText ? <CopyMessageButton text={copyText} /> : null}
       </div>
     </div>
+  );
+}
+
+function CopyMessageButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon-xs"
+      aria-label={copied ? "Copied" : "Copy message"}
+      onClick={handleCopy}
+      className="text-muted-foreground hover:text-foreground"
+    >
+      {copied ? <CheckIcon /> : <CopyIcon />}
+    </Button>
   );
 }
