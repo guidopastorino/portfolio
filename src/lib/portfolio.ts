@@ -1,3 +1,19 @@
+function getSiteUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  }
+
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+}
+
 export const siteConfig = {
   name: "Guido Pastorino",
   initials: "GP",
@@ -8,6 +24,8 @@ export const siteConfig = {
   github: "https://github.com/guidopastorino",
   linkedin: "https://www.linkedin.com/in/guidopastorino",
   resumeUrl: "/resume.pdf",
+  url: getSiteUrl(),
+  ogImage: "/og-image.png",
   bio: "Full Stack Developer specialized in the Next.js, TypeScript, PostgreSQL, Tailwind CSS, and shadcn/ui ecosystem. I build fast, maintainable products, optimize performance, and ensure reliable releases through testing and CI/CD.",
 };
 
