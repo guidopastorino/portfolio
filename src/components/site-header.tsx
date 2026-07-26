@@ -1,5 +1,6 @@
 import { DownloadIcon, MenuIcon } from "lucide-react";
 
+import { AiChatToggle } from "@/components/ai-chat/ai-chat-toggle";
 import { GitHubIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -65,6 +66,8 @@ export function SiteHeader() {
           </Button>
 
           <ThemeToggle />
+
+          <AiChatToggle />
 
           <div className="md:hidden">
             <MobileNav />

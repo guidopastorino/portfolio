@@ -8,6 +8,7 @@ import {
   PhoneIcon,
 } from "lucide-react";
 
+import { AiChatShell } from "@/components/ai-chat/ai-chat-shell";
 import { SectionLabel } from "@/components/home/section-label";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { SiteHeader } from "@/components/site-header";
@@ -21,21 +22,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  experience,
-  projects,
-  siteConfig,
-  skillGroups,
-} from "@/lib/portfolio";
+import { experience, projects, siteConfig, skillGroups } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
 const projectIcons = [BriefcaseIcon, MusicIcon, FolderGit2Icon] as const;
 
 export function HomePage() {
   return (
-    <div className="flex min-h-full flex-col bg-background">
-      <SiteHeader />
-
+    <AiChatShell header={<SiteHeader />}>
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8">
         <section id="about" className="scroll-mt-20">
           <Card className="justify-between py-0">
@@ -269,6 +263,6 @@ export function HomePage() {
           </Card>
         </section>
       </main>
-    </div>
+    </AiChatShell>
   );
 }
