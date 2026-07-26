@@ -61,9 +61,9 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
     setMessages([]);
   }, [setMessages]);
 
-  const stopTracked = useCallback(() => {
+  const stopTracked = useCallback(async () => {
     trackEvent("ai_chat_stopped");
-    stop();
+    await stop();
   }, [stop]);
 
   const value = useMemo(
