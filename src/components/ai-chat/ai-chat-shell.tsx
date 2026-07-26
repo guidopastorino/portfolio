@@ -19,7 +19,6 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 const CHAT_DEFAULT_WIDTH = 380;
 const CHAT_MIN_WIDTH = CHAT_DEFAULT_WIDTH;
 const CHAT_MAX_WIDTH = 560;
-const HEADER_HEIGHT = "3.5rem";
 
 function DesktopChatSidebar() {
   const [width, setWidth] = useState(CHAT_DEFAULT_WIDTH);
@@ -51,11 +50,8 @@ function DesktopChatSidebar() {
 
   return (
     <aside
-      className="sticky top-14 z-30 flex shrink-0 flex-col self-start border-l bg-background relative"
-      style={{
-        width,
-        height: `calc(100dvh - ${HEADER_HEIGHT})`,
-      }}
+      className="sticky top-0 z-50 flex h-dvh shrink-0 flex-col border-l bg-background relative"
+      style={{ width }}
     >
       <button
         type="button"
@@ -95,14 +91,25 @@ function AiChatShellInner({
   const { open, setOpen } = useAiChat();
   const isMobile = useIsMobile();
 
-  return (
-    <div className="flex min-h-full flex-col bg-background">
-      {header}
+  useEffect(() => {
+    if (!open) return;
 
-      <div className="flex flex-1 items-start">
-        <div className="min-w-0 flex-1">{children}</div>
-        {open && !isMobile ? <DesktopChatSidebar /> : null}
+    const root = document.documentElement;
+    root.classList.add("scrollbar-none");
+
+    return () => {
+      root.classList.remove("scrollbar-none");
+    };
+  }, [open]);
+
+  return (
+    <div className="flex min-h-full bg-background">
+      <div className="flex min-w-0 flex-1 flex-col">
+        {header}
+        <div className="flex-1">{children}</div>
       </div>
+
+      {open && !isMobile ? <DesktopChatSidebar /> : null}
 
       {isMobile ? (
         <Sheet open={open} onOpenChange={setOpen}>

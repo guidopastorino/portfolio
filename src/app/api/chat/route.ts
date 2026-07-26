@@ -50,6 +50,7 @@ export async function POST(req: Request) {
     model: google("gemini-3.1-flash-lite"),
     system: buildSystemPrompt(context),
     messages: await convertToModelMessages(messages),
+    abortSignal: req.signal,
     experimental_transform: smoothStream({
       delayInMs: 15,
       chunking: "word",

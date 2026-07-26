@@ -17,8 +17,10 @@ type AiChatContextValue = {
   toggle: () => void;
   messages: UIMessage[];
   sendMessage: ReturnType<typeof useChat>["sendMessage"];
+  stop: ReturnType<typeof useChat>["stop"];
   status: ReturnType<typeof useChat>["status"];
   error: Error | undefined;
+  resetChat: () => void;
 };
 
 const AiChatContext = createContext<AiChatContextValue | null>(null);
@@ -30,7 +32,7 @@ const chatTransport = new DefaultChatTransport({
 export function AiChatProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
-  const { messages, sendMessage, status, error } = useChat({
+  const { messages, sendMessage, stop, status, error, setMessages } = useChat({
     id: "portfolio-ai-chat",
     transport: chatTransport,
   });
@@ -39,6 +41,10 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
     setOpen((current) => !current);
   }, []);
 
+  const resetChat = useCallback(() => {
+    setMessages([]);
+  }, [setMessages]);
+
   const value = useMemo(
     () => ({
       open,
@@ -46,10 +52,12 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
       toggle,
       messages,
       sendMessage,
+      stop,
       status,
       error,
+      resetChat,
     }),
-    [open, toggle, messages, sendMessage, status, error],
+    [open, toggle, messages, sendMessage, stop, status, error, resetChat],
   );
 
   return (
