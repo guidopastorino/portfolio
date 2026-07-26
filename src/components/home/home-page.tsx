@@ -1,13 +1,11 @@
 import {
   ArrowRightIcon,
-  ArrowUpRightIcon,
   BriefcaseIcon,
   FolderGit2Icon,
   GlobeIcon,
   MapPinIcon,
   MusicIcon,
   PhoneIcon,
-  TrendingUpIcon,
 } from "lucide-react";
 
 import { SectionLabel } from "@/components/home/section-label";
@@ -23,11 +21,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
-  activityMonths,
   experience,
-  githubStats,
   projects,
   siteConfig,
   skillGroups,
@@ -37,17 +32,12 @@ import { cn } from "@/lib/utils";
 const projectIcons = [BriefcaseIcon, MusicIcon, FolderGit2Icon] as const;
 
 export function HomePage() {
-  const maxActivity = Math.max(...activityMonths.map((m) => m.value));
-
   return (
     <div className="flex min-h-full flex-col bg-background">
       <SiteHeader />
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8">
-        <section
-          id="about"
-          className="grid scroll-mt-20 gap-4 lg:grid-cols-[1.4fr_1fr]"
-        >
+        <section id="about" className="scroll-mt-20">
           <Card className="justify-between py-0">
             <CardHeader className="gap-4 pt-5">
               <SectionLabel>{"// About Me"}</SectionLabel>
@@ -103,48 +93,10 @@ export function HomePage() {
               </a>
             </CardFooter>
           </Card>
-
-          <Card className="py-0">
-            <CardContent className="grid flex-1 grid-cols-2 gap-px bg-border p-0">
-              {githubStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex flex-col justify-between gap-3 bg-card p-4"
-                >
-                  <p className="text-[11px] text-muted-foreground">
-                    {stat.label}
-                  </p>
-                  <div>
-                    <p className="font-sans text-2xl font-semibold tracking-tight">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
-                      {stat.change.includes("%") ? (
-                        <TrendingUpIcon className="size-3" />
-                      ) : null}
-                      {stat.change}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-            <CardFooter>
-              <a
-                href={siteConfig.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <GitHubIcon className="size-3.5" />
-                View GitHub Profile
-                <ArrowUpRightIcon className="size-3" />
-              </a>
-            </CardFooter>
-          </Card>
         </section>
 
         <section className="grid gap-4 lg:grid-cols-3">
-          <Card id="experience" className="scroll-mt-20 py-0 lg:col-span-1">
+          <Card id="experience" className="scroll-mt-20 py-0 lg:col-span-2">
             <CardHeader className="pt-5">
               <div className="flex items-center justify-between gap-2">
                 <SectionLabel>{"// Experience"}</SectionLabel>
@@ -159,16 +111,36 @@ export function HomePage() {
                 {experience.company} · {experience.location}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-3 pb-5">
               <ul className="space-y-2.5 text-xs leading-relaxed text-muted-foreground">
-                {experience.highlights.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span className="mt-1.5 size-1 shrink-0 rounded-full bg-foreground/40" />
-                    <span>{item}</span>
-                  </li>
-                ))}
+                {experience.highlights.map((item) => {
+                  const key = typeof item === "string" ? item : item.link.href;
+                  return (
+                    <li key={key} className="flex gap-2">
+                      <span className="mt-1.5 size-1 shrink-0 rounded-full bg-foreground/40" />
+                      <span>
+                        {typeof item === "string" ? (
+                          item
+                        ) : (
+                          <>
+                            {item.before}
+                            <a
+                              href={item.link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-foreground underline-offset-2 transition-colors hover:underline"
+                            >
+                              {item.link.label}
+                            </a>
+                            {item.after}
+                          </>
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
-              <div className="flex flex-wrap gap-1.5 pt-1">
+              <div className="flex flex-wrap gap-2 pt-1">
                 {experience.stack.map((tech) => (
                   <Badge key={tech} variant="outline">
                     {tech}
@@ -178,53 +150,17 @@ export function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="py-0">
-            <CardHeader className="pt-5">
-              <div className="flex items-center justify-between gap-2">
-                <SectionLabel>{"// GitHub Activity"}</SectionLabel>
-                <span className="text-[11px] text-muted-foreground">
-                  Last 6 months
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-1 flex-col justify-end">
-              <div className="flex h-36 items-end gap-2">
-                {activityMonths.map((month) => (
-                  <div
-                    key={month.month}
-                    className="flex flex-1 flex-col items-center gap-2"
-                  >
-                    <div
-                      className="w-full bg-foreground/85 transition-all dark:bg-foreground/70"
-                      style={{
-                        height: `${(month.value / maxActivity) * 100}%`,
-                        minHeight: "12%",
-                      }}
-                    />
-                    <span className="text-[10px] text-muted-foreground">
-                      {month.month}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="text-[11px] text-muted-foreground">
-              <GitHubIcon className="mr-1.5 size-3.5" />
-              Most used: TypeScript, Next.js, React, PostgreSQL
-            </CardFooter>
-          </Card>
-
           <Card id="skills" className="scroll-mt-20 py-0">
             <CardHeader className="pt-5">
               <SectionLabel>{"// Skills & AI Tools"}</SectionLabel>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pb-5">
               {skillGroups.map((group) => (
                 <div key={group.title} className="space-y-2">
                   <p className="text-[11px] font-medium text-foreground">
                     {group.title}
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
                       <Badge key={item} variant="outline">
                         {item}
@@ -268,7 +204,7 @@ export function HomePage() {
                         {project.description}
                       </CardDescription>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {project.stack.map((tech) => (
                         <Badge key={tech} variant="secondary">
                           {tech}
@@ -276,17 +212,14 @@ export function HomePage() {
                       ))}
                     </div>
                   </CardHeader>
-                  <CardFooter className="justify-between gap-2">
-                    <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                      <span>★ {project.stars}</span>
-                      <span>⑂ {project.forks}</span>
-                    </div>
+                  <CardFooter className="mt-auto justify-end gap-2">
                     <a
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                      className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
                     >
+                      <GitHubIcon className="size-3.5" />
                       View Repo
                       <ArrowRightIcon className="size-3" />
                     </a>
@@ -329,7 +262,6 @@ export function HomePage() {
                 </a>
               </div>
             </CardHeader>
-            <Separator />
             <CardFooter className="justify-center py-4 text-[11px] text-muted-foreground">
               © {new Date().getFullYear()} {siteConfig.name}. All rights
               reserved.

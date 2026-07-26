@@ -44,7 +44,12 @@ export const experience = {
   highlights: [
     "Develop and maintain web applications using Next.js, TypeScript, Tailwind CSS, Angular, and shadcn/ui, building reusable and scalable UI components.",
     "Led the development of Atlas, a multi-tenant B2B operations portal that delivers DevOps/SecOps/Observability capacity as a subscription service with atomic tasks, role-based workflows, and operational visibility.",
-    "Built Atlas with React + Vite, React Query, TypeScript, Tailwind CSS, Hono, PostgreSQL, Drizzle ORM, and Better Auth (email/password, username, and OAuth).",
+    {
+      before: "Built ",
+      link: { label: "Orexe Atlas", href: "https://atlas.orexe.io/" },
+      after:
+        " with React + Vite, React Query, TypeScript, Tailwind CSS, Hono, PostgreSQL, Drizzle ORM, and Better Auth (email/password, username, and OAuth).",
+    },
   ],
   stack: [
     "Next.js",
@@ -88,8 +93,6 @@ export const projects = [
       "Multi-tenant B2B operations portal for DevOps/SecOps/Observability capacity as a subscription service, with atomic tasks and role-based workflows.",
     stack: ["React", "Vite", "Hono", "PostgreSQL", "Drizzle", "Better Auth"],
     href: "https://github.com/guidopastorino",
-    stars: 12,
-    forks: 3,
   },
   {
     title: "Music Data Explorer",
@@ -97,8 +100,6 @@ export const projects = [
       "Next.js SSR app that uses the Spotify API to analyze artists and songs, with Recharts visualizations and AI-generated fun facts via Gemini.",
     stack: ["Next.js", "TypeScript", "Spotify API", "Recharts", "AI SDK"],
     href: "https://github.com/guidopastorino",
-    stars: 24,
-    forks: 5,
   },
   {
     title: "University Projects",
@@ -106,7 +107,5 @@ export const projects = [
       "Problem-solving development with efficient solutions in C and Python, focused on algorithm optimization for academic and practical challenges.",
     stack: ["C", "Python", "Algorithms"],
     href: "https://github.com/guidopastorino",
-    stars: 8,
-    forks: 2,
   },
 ] as const;

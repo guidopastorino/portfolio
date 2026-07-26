@@ -48,15 +48,21 @@ export function SiteHeader() {
             Resume
           </a>
 
-          <a
-            href={siteConfig.github}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Button
+            variant="outline"
+            size="icon-sm"
+            nativeButton={false}
+            render={
+              <a
+                href={siteConfig.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
             aria-label="GitHub"
-            className={buttonVariants({ variant: "outline", size: "icon-sm" })}
           >
-            <GitHubIcon className="size-4" />
-          </a>
+            <GitHubIcon />
+          </Button>
 
           <ThemeToggle />
 
