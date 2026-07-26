@@ -13,6 +13,7 @@
     "@ai-sdk/google": "^4.0.24",
     "@ai-sdk/react": "^4.0.40",
     "@base-ui/react": "^1.6.0",
+    "@next/third-parties": "^16.2.12",
     "@shadcn/react": "^0.2.1",
     "ai": "^7.0.37",
     "class-variance-authority": "^0.7.1",
